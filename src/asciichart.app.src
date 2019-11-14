@@ -1,0 +1,15 @@
+{application, asciichart,
+ [{description, "Tiny library for drawing ascii charts"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {asciichart, []}},
+  {applications,
+   [kernel,
+    stdlib
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {licenses, ["Unlicense"]},
+  {links, []}
+ ]}.
