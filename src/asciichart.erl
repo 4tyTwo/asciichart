@@ -151,3 +151,29 @@ get_label_size(Size) ->
 
 round(Num, Precision) ->
     erlang:list_to_float(io_lib:format("~.*f", [Precision, Num])).
+
+-ifdef(TEST).
+-include_lib("eunit/include/eunit.hrl").
+
+-define(CHART_123, <<51,46,48,48,32,226,148,164,32,226,149,173,32,32,10,50,46,48,48,32,226,148,
+  164,226,149,173,226,149,175,32,32,10,49,46,48,48,32,226,148,188,226,149,175,
+  32,32,32,10,32,32,32,32,32,32,32>>).
+
+-spec test() -> _.
+
+-spec no_data_plot_error_test() -> _.
+
+no_data_plot_error_test() ->
+    {error, no_data} = plot([]).
+
+-spec no_data_plot_and_print_error_test() -> _.
+
+no_data_plot_and_print_error_test() ->
+    {error, no_data} = plot_and_print([]).
+
+-spec plot_ok_test() -> _.
+
+plot_ok_test() ->
+    {ok, ?CHART_123} = plot([1,2,3]).
+
+-endif.
