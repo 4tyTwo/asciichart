@@ -98,13 +98,14 @@ plot(Series, Config) when is_list(Series), is_map(Config) ->
         Result2,
         Range2
     ),
-    Sorted = lists:keysort(1, maps:to_list(Result3)),
-    Result4 = lists:map(fun({_, X}) ->
-        Sorted1 = lists:keysort(1, maps:to_list(X)),
-        List2 = lists:map(fun({_, W}) -> W end, Sorted1),
-        list_to_binary(lists:join("", List2))
-    end,
-    Sorted),
+    Prepared = to_list_and_sort(Result3),
+    Result4 = lists:map(
+        fun({_, Sublist}) ->
+            List2 = lists:map(fun({_, V}) -> V end, Sublist),
+            list_to_binary(lists:join("", List2))
+        end,
+        Prepared
+    ),
    {ok, list_to_binary(lists:join("\n", Result4))}.
 
 -spec print(binary()) -> ok.
@@ -112,8 +113,17 @@ plot(Series, Config) when is_list(Series), is_map(Config) ->
 print(Chart) when is_binary(Chart) ->
     ok = io:put_chars(standard_io, Chart).
 
-
 %%
+
+to_list_and_sort(MapOfMaps) ->
+    lists:keysort(
+        1,
+        maps:fold(
+            fun(K, V, Acc) -> [{K, lists:keysort(1, maps:to_list(V)) } | Acc] end,
+            [],
+            MapOfMaps
+        )
+    ).
 
 % works only for maps
 put_in(_, [], _) -> error(empty_list_of_keys);
