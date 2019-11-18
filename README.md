@@ -24,7 +24,7 @@ Add `asciichart` to the list of dependencies in `rebar.config`:
 ## Usage
 
 ```erlang
-{:ok, Chart} = asciichart:plot([1, 2, 3, 3, 2, 1]),
+{ok, Chart} = asciichart:plot([1, 2, 3, 3, 2, 1]),
 asciichart:print(Chart).
 
 # should render as
