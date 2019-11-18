@@ -3,6 +3,8 @@
 -export([plot/1]).
 -export([plot/2]).
 -export([print/1]).
+-export([plot_and_print/1]).
+-export([plot_and_print/2]).
 
 -define(OFFSET, 3).
 -define(PADDING, <<" ">>).
@@ -112,6 +114,19 @@ plot(Series, Config) when is_list(Series), is_map(Config) ->
 
 print(Chart) when is_binary(Chart) ->
     ok = io:put_chars(standard_io, Chart).
+
+-spec plot_and_print(series()) -> ok | {error, no_data}.
+
+plot_and_print(Series) ->
+    plot_and_print(Series, #{}).
+
+-spec plot_and_print(series(), config()) -> ok | {error, no_data}.
+
+plot_and_print(Series, Config) ->
+    case plot(Series, Config) of
+        {ok, Chart} -> print(Chart);
+        Error -> Error
+    end.
 
 %%
 
