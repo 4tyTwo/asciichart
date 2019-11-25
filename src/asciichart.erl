@@ -46,12 +46,17 @@ plot(Series, Config) when is_list(Series), is_map(Config) ->
     Rows = abs(IntMax2 - IntMin2),
     Width = length(Series) + Offset,
 
+    %%%%%%%%%%%%%%
 
-    %%%%%%%%%%%%%
     Range0 = lists:seq(0, Rows + 1),
-    Result0 = maps:from_list(lists:map(fun(X) ->
-        {X, maps:from_list(lists:map(fun(Y) -> {Y, <<" "/utf8>>} end, lists:seq(0, Width)))}
-    end, Range0)),
+    Result0 = maps:from_list(
+        lists:map(
+            fun(X) ->
+                {X, maps:from_list(lists:map(fun(Y) -> {Y, <<" "/utf8>>} end, lists:seq(0, Width)))}
+            end,
+            Range0
+        )
+    ),
 
     %%%%%%%%%%%%%%
 
@@ -59,26 +64,30 @@ plot(Series, Config) when is_list(Series), is_map(Config) ->
     MinLabelSize = get_label_size(Min),
     LabelSize    = max(MaxLabelSize, MinLabelSize),
 
+    %%%%%%%%%%%%%%
 
-    %%%%%%%%%%%%%
     Range1 = lists:seq(IntMin2, IntMax2),
     Result1 = lists:foldl(
         fun(Y, Map) ->
-            Label0 = Max - (Y - IntMin2) * Interval / Rows,
-            Label1 = round(Label0, 2),
-            Label = case string:pad(float_to_binary(Label1, [{decimals, 2}]), LabelSize, leading, Padding) of 
-                [[], UnpaddedLabel]    -> UnpaddedLabel;
-                [Pad, UnpaddedLabel]   -> FormattedPad = list_to_binary(lists:join("", Pad)), <<FormattedPad/binary, UnpaddedLabel/binary>>
+            LabelLength0 = Max - (Y - IntMin2) * Interval / Rows,
+            LabelLength1 = round(LabelLength0, 2),
+            Label = case string:pad(float_to_binary(LabelLength1, [{decimals, 2}]), LabelSize, leading, Padding) of 
+                [[], UnpaddedLabel]    ->
+                    UnpaddedLabel;
+                [Pad, UnpaddedLabel]   ->
+                    FormattedPad = list_to_binary(lists:join("", Pad)), <<FormattedPad/binary, UnpaddedLabel/binary>>
             end,
-            Lvl1Key = Y - IntMin2,
-            Lvl2Key = max(Offset - string:length(Label), 0),
-            UpdatedMap = put_in(Map, [Lvl1Key, Lvl2Key], Label),
-            put_in(UpdatedMap, [Lvl1Key, Offset - 1], case Y of 0 -> <<"┼"/utf8>>; _ -> <<"┤"/utf8>> end)
+            Key1 = Y - IntMin2,
+            Key2 = max(Offset - string:length(Label), 0),
+            UpdatedMap = put_in(Map, [Key1, Key2], Label),
+            put_in(UpdatedMap, [Key1, Offset - 1], case Y of 0 -> <<"┼"/utf8>>; _ -> <<"┤"/utf8>> end)
         end,
         Result0,
         Range1
     ),
-    %%%%%
+
+    %%%%%%%%%%%%%%
+
     Y = trunc(lists:nth(1, Series) * Ratio - Min2),
     Result2 = put_in(Result1, [Rows - Y, Offset - 1], <<"┼"/utf8>>),
     Range2 = lists:seq(0, length(Series) - 2),
