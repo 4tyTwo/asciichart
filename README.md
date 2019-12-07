@@ -27,7 +27,7 @@ Add `asciichart` to the list of dependencies in `rebar.config`:
 {ok, Chart} = asciichart:plot([1, 2, 3, 3, 2, 1]),
 asciichart:print(Chart).
 
-# should render as
+% should render as
 
 3.00 ┤ ╭─╮
 2.00 ┤╭╯ ╰╮
@@ -44,7 +44,7 @@ One or more of the following settings can be provided:
 {ok, Chart} = asciichart:plot([1, 2, 5, 5, 4, 3, 2, 100, 0], #{height => 3, offset => 10, padding: <<"_">>}).
 asciichart:print(Chart).
 
-# should render as
+% should render as
 
        ╭─> label
     ------
@@ -55,7 +55,7 @@ asciichart:print(Chart).
 ---- ╰─> label padding
  ╰─> remaining offset (without the label)
 
-# Rendering of empty charts is not supported
+% Rendering of empty charts is not supported
 
 asciichart:plot([])
 {error, no_data}
